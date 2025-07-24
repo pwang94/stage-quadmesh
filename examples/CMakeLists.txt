@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.30)
+cmake_minimum_required(VERSION 3.12...3.30)
 
 project(ultimaille-examples LANGUAGES C CXX)
 # or...
@@ -15,7 +15,6 @@ add_executable(midpointpoly midpointpoly.cpp)
 add_executable(bords bords.cpp)
 # add_executable(axe_median axe_median.cpp)
 add_executable(tache_to_poly tache_to_quad.cpp)
-add_executable(poly_to_poly poly_to_poly.cpp)
 # add_executable(poly_to_poly2 poly_to_poly2.cpp)
 # add_executable(poly_aligne poly_aligne.cpp)
 add_executable(framefield framefield.cpp)
@@ -43,7 +42,7 @@ target_link_libraries(midpointpoly ${CMAKE_DL_LIBS} ultimaille $<$<BOOL:${OpenMP
 target_link_libraries(bords ${CMAKE_DL_LIBS} ultimaille $<$<BOOL:${OpenMP_CXX_FOUND}>:OpenMP::OpenMP_CXX>)
 # target_link_libraries(axe_median ${CMAKE_DL_LIBS} ultimaille $<$<BOOL:${OpenMP_CXX_FOUND}>:OpenMP::OpenMP_CXX>)
 target_link_libraries(tache_to_poly ${CMAKE_DL_LIBS} ultimaille $<$<BOOL:${OpenMP_CXX_FOUND}>:OpenMP::OpenMP_CXX>)
-target_link_libraries(poly_to_poly ${CMAKE_DL_LIBS} ultimaille $<$<BOOL:${OpenMP_CXX_FOUND}>:OpenMP::OpenMP_CXX>)
+# target_link_libraries(poly_to_poly ${CMAKE_DL_LIBS} ultimaille $<$<BOOL:${OpenMP_CXX_FOUND}>:OpenMP::OpenMP_CXX>)
 # target_link_libraries(poly_to_poly2 ${CMAKE_DL_LIBS} ultimaille $<$<BOOL:${OpenMP_CXX_FOUND}>:OpenMP::OpenMP_CXX>)
 # target_link_libraries(poly_aligne ${CMAKE_DL_LIBS} ultimaille $<$<BOOL:${OpenMP_CXX_FOUND}>:OpenMP::OpenMP_CXX>)
 target_link_libraries(framefield ${CMAKE_DL_LIBS} ultimaille $<$<BOOL:${OpenMP_CXX_FOUND}>:OpenMP::OpenMP_CXX>)
