@@ -40,9 +40,9 @@ int main(int argc, char** argv) {
     //parametre
 
     
-    double dist_max = 0.195;
-    int dist_max1 = 25;
-    double dist_min = 0.05;
+    double dist_max = 0.195; //pour supprimer des sources
+    int dist_max1 = 25;  // aussi mais la distance est le nombre d'arête sur le chemin
+    double dist_min = 0.05; // pour ajouter des sources
     
     double eps =1e-6;
     
@@ -57,9 +57,10 @@ int main(int argc, char** argv) {
     Triangles m; // charts
     Triangles mff; //framefield
     Triangles m_bord;
-    static const std::string entree = "\\..\\Debug\\sortie_poubelle2.geogram";
-    static const std::string entree_bord = "\\..\\Debug\\sortie_bord.geogram";
-    static const std::string sortie = "sortie_poubelle2.geogram";
+    // static const std::string entree = "\\..\\Debug\\sortie.geogram"; si on prend la sortie de tache_singu
+    static const std::string entree = "\\..\\Debug\\sortie_recentre.geogram"; // si on veut relancer sur la nouvelle sortie
+    static const std::string entree_bord = "\\..\\Debug\\sortie_chart.geogram";
+    static const std::string sortie = "sortie_recentre.geogram";
     static const std::string ff_path = "\\..\\Debug\\framefield.geogram";
     SurfaceAttributes attrs = read_by_extension(path + entree, m);
     SurfaceAttributes attrs_framefield = read_by_extension(path + ff_path, mff);
@@ -141,7 +142,7 @@ int main(int argc, char** argv) {
 
     std::vector<vec3> centres; 
     //au lieu de prendre le barycentre prendre la moyenne de toute les faces de la zone centre_tri[source] : [somme, nb point]
-    std::vector<std::pair<vec3, int>> centre_tri(500, {vec3(0, 0, 0), 0}); //TODO nb_source
+    std::vector<std::pair<vec3, int>> centre_tri(nb_source + 300, {vec3(0, 0, 0), 0}); //TODO nb_source
 
     for (auto f: m.iter_facets()) {
         if (nb_cote[source0[f]] == 3) continue;
@@ -236,6 +237,7 @@ int main(int argc, char** argv) {
             Surface::Facet f_source(m, racine_of_source[source[f]]); 
             for (auto h: f.iter_halfedges()) {
                 if (hard_edges_attr[h]) {continue;} //suit les features
+                
                 auto f2 = h.opposite().facet();
 
                 //on calcule la distance linf suivant le framefield de f2 à la source inf TODO que si la source est pas une singu

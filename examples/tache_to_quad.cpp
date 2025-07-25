@@ -67,9 +67,9 @@ int main(int argc, char** argv) {
 
     // Declare a mesh with triangle surface
     Triangles m;
-    static const std::string entree = "\\..\\Debug\\sortie_poubelle.geogram";
+    static const std::string entree = "\\..\\Debug\\sortie_disque.geogram";
     static const std::string ff_path = "\\..\\Debug\\framefield.geogram";
-    static const std::string sortie = "outpoly_poubelle.geogram";
+    static const std::string sortie = "outpoly.geogram";
 
     //il faut avoir source, nb_source
     SurfaceAttributes attrs = read_by_extension(path + entree, m);

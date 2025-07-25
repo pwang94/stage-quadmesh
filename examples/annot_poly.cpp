@@ -42,7 +42,9 @@ int main(int argc, char** argv) {
     // Declare a mesh with triangle surface
     Polygons m;
 
-    SurfaceAttributes attrs = read_by_extension(path + "\\..\\Debug\\outpoly_poubelle.geogram", m);
+    SurfaceAttributes attrs = read_by_extension(path + "\\..\\Debug\\outpoly.geogram", m);
+    static const std::string sortie = "poly_annot.geogram";
+
     m.connect();
     PointAttribute<int> pt_singu("pt_singu", attrs, m);
     PointAttribute<bool> coins("coins_new", attrs, m);
@@ -171,7 +173,7 @@ int main(int argc, char** argv) {
         int pris_nb = 0;
         for (int i = 0; i< f.size(); i++) {  
             auto [angle, vert_num] =candidats[i];
-            //on doit les sommets qui ont une valence tq +2 ça fait dépasser sinon :<
+            //on doit prendre les sommets qui ont une valence tq +2 ça fait dépasser sinon :<
 
             if (compte_sommet[f.vertex(vert_num)] + 2 > pt_singu[f.vertex(vert_num)] && annotation[f][vert_num] == -1) {
                 // il est pris 
@@ -287,10 +289,10 @@ int main(int argc, char** argv) {
     file.close();
 
     // write_by_extension("poly_annot.geogram", m, {{}, {}, {{"annotations", annotations.ptr}} });
-    write_by_extension("poly_annot.geogram", m, {{{"compte", compte_sommet.ptr}, }, {{"compte_face", valide.ptr}}, {{"annotations", annotations.ptr}, {"map", mapquad.ptr}} });
+    write_by_extension(sortie, m, {{{"compte", compte_sommet.ptr}, }, {{"compte_face", valide.ptr}}, {{"annotations", annotations.ptr}, {"map", mapquad.ptr}} });
 
 
-    int result = system((getGraphitePath() + " poly_annot.geogram").c_str()); 
+    int result = system((getGraphitePath() + " " + sortie).c_str()); 
     // --- END ---
     
     return 0;

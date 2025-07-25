@@ -50,7 +50,7 @@ int main(int argc, char** argv) {
     Triangles m;
     // on met argv[0] en entrée TODO et faire un script shell qui fait tout bien
     static const std::string entree = "joint_sub_sub.geogram";
-    static const std::string sortie = "sortie_bord.geogram";
+    static const std::string sortie = "sortie_chart.geogram";
     read_by_extension(path + entree, m);
     m.connect();
 
@@ -64,12 +64,10 @@ int main(int argc, char** argv) {
     int compte_face = 0;
     FacetAttribute<int> zone(m, -1);
     int zone_num = 0;
-    std::vector<std::vector<int>> de_zone; // a chaque zone donne les faces dedans
     // obtenir les grosses zones engendrées par les hards edges
 
     while (compte_face < m.nfacets()) { 
         int frand;
-        de_zone.push_back({});
         do  {
             frand = rand() % m.nfacets();
         } while (zone[frand] != -1);
@@ -80,7 +78,6 @@ int main(int argc, char** argv) {
                 if (zone[fid] != -1) {continue;}
                 compte_face++;
                 zone[fid] = zone_num;
-                de_zone[zone_num].push_back(fid);
                 Surface::Facet f(m, fid);
                 for (auto h : f.iter_halfedges()) {
                     int f_opp = h.opposite().facet();
@@ -170,11 +167,11 @@ int main(int argc, char** argv) {
                                 angle3 += 1; 
                             }
                         }
+                        //on regardesi l'angle est concave
                         if (angle1 >= 4) {coins_facet[f1] = true; coins_attr[v] = 1;}
                         if (angle2 >= 4) {coins_facet[f2] = true; coins_attr[v] = 1;}
                         if (angle3 >= 4) {coins_facet[f3] = true; coins_attr[v] = 1;}
-                        
-
+                        break;
                     }
                 }
             }
@@ -239,8 +236,6 @@ int main(int argc, char** argv) {
         a_traite = a_traite2;
         a_traite2.clear();
     } while (a_traite.size() != 0);
-
-
 
     
     write_by_extension(sortie, m, {{{"coins_attr", coins_attr.ptr}}, {{"coupe", coupe.ptr}, {"source", source2.ptr}, {"ligne", ligne.ptr}, {"seed", seed.ptr}, {"coins concave", coins_facet.ptr}/* {{"dist", dist.ptr},  */}, {{"hard_edge", hard_edges_attr.ptr}}});

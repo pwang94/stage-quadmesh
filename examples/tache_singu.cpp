@@ -49,7 +49,7 @@ int main(int argc, char** argv) {
     Triangles m;
     Triangles m_bord;
     static const std::string entree = "\\..\\Debug\\framefield.geogram";
-    static const std::string entree_bord = "\\..\\Debug\\sortie_bord.geogram";
+    static const std::string entree_bord = "\\..\\Debug\\sortie_chart.geogram";
     static const std::string sortie = "sortie.geogram";
     std::cout << "pass1" << std::endl;
     SurfaceAttributes attrs = read_by_extension(path + entree, m);
