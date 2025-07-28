@@ -37,26 +37,22 @@ void find_hard_edges(Triangles& mesh, CornerAttribute<bool>& hard_edges_attr, do
 int main(int argc, char** argv) {
     // --- LOAD ---
 
-    //parametre
-
-
-    //
-
     std::string path = getAssetPath();
 
     Triangles m; // charts
     Triangles mff; //framefield
-    static const std::string entree = "\\..\\Debug\\sortie_recentre.geogram";
-    static const std::string entree_poly = "\\..\\Debug\\outpoly.geogram";
+    static const std::string entree = "sortie_recentre.geogram";
+    static const std::string entree_poly = "outpoly.geogram";
     static const std::string sortie = "sortie_disque.geogram";
-    static const std::string ff_path = "\\..\\Debug\\framefield.geogram";
-    SurfaceAttributes attrs = read_by_extension(path + entree, m);
-    SurfaceAttributes attrs_framefield = read_by_extension(path + ff_path, mff);
+    static const std::string ff_path = "framefield.geogram";
+    SurfaceAttributes attrs = read_by_extension( entree, m);
+    SurfaceAttributes attrs_framefield = read_by_extension( ff_path, mff);
     m.connect();
 
 
 
-    FacetAttribute<bool> coins("coins", attrs, m);
+    PointAttribute<int> coins_attr("coins_attr", attrs, m);
+    FacetAttribute<int> coins_concave("coins concave", attrs, m);
 
     PointAttribute<int> singularite("singularite", attrs, m);
     FacetAttribute<int> source("source", attrs, m);
@@ -84,7 +80,7 @@ int main(int argc, char** argv) {
 
     int nb_source = racine_of_source.size();
 
-    //on check pour chaque charts si c'est un non disque topologique
+    //on check pour chaque charts si c'est un non disque topologique avecc la formule d'euler
     // on calcule sommets arêtes faces
 
     
@@ -131,11 +127,10 @@ int main(int argc, char** argv) {
         }
     }
 
-                    std::cout << "passe" << std::endl;
 
 
 
-    write_by_extension(sortie, m, {{{"singularite", singularite.ptr}}, {{"source", source.ptr}, {"racine", racine.ptr}, {"dist", dist.ptr}, {"coins",coins.ptr}}, {}});
+    write_by_extension(sortie, m, {{{"singularite", singularite.ptr}, {"coins_attr", coins_attr.ptr}}, {{"source", source.ptr}, {"racine", racine.ptr}, {"dist", dist.ptr}, {"coins concave",coins_concave.ptr}}, {}});
 
     int result = system((getGraphitePath() + " " + sortie).c_str());
     // --- END ---

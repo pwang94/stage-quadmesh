@@ -51,7 +51,8 @@ int main(int argc, char** argv) {
     // on met argv[0] en entrée TODO et faire un script shell qui fait tout bien
     static const std::string entree = "joint_sub_sub.geogram";
     static const std::string sortie = "sortie_chart.geogram";
-    read_by_extension(path + entree, m);
+    std::cout << path <<std::endl;
+    read_by_extension(entree, m);
     m.connect();
 
     // les hard edges

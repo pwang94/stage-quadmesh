@@ -67,17 +67,17 @@ int main(int argc, char** argv) {
 
     // Declare a mesh with triangle surface
     Triangles m;
-    static const std::string entree = "\\..\\Debug\\sortie_disque.geogram";
-    static const std::string ff_path = "\\..\\Debug\\framefield.geogram";
+    static const std::string entree = "sortie_disque.geogram";
+    static const std::string ff_path = "framefield.geogram";
     static const std::string sortie = "outpoly.geogram";
 
     //il faut avoir source, nb_source
-    SurfaceAttributes attrs = read_by_extension(path + entree, m);
+    SurfaceAttributes attrs = read_by_extension( entree, m);
     m.connect();
     
     
     Triangles mff; //framefield
-    SurfaceAttributes attrs_framefield = read_by_extension(path + ff_path, mff);
+    SurfaceAttributes attrs_framefield = read_by_extension(ff_path, mff);
     FacetAttribute<vec3> frames0("frames0", attrs_framefield, mff);
     FacetAttribute<vec3> frames1("frames1", attrs_framefield, mff);
 

@@ -56,7 +56,7 @@ int main(int argc, char** argv) {
     static const std::string entree = "joint_sub_sub.geogram";
     static const std::string sortie = "framefield.geogram";
     static const std::string sortiepl = "framefieldpl.geogram"; // pour l'affichage avec un polyline
-    read_by_extension(path + entree, m);
+    read_by_extension(entree, m);
     m.connect();
     //calcul des faces
     CornerAttribute<bool> hard_edges_attr(m, false);

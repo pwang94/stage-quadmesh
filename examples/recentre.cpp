@@ -57,14 +57,14 @@ int main(int argc, char** argv) {
     Triangles m; // charts
     Triangles mff; //framefield
     Triangles m_bord;
-    // static const std::string entree = "\\..\\Debug\\sortie.geogram"; si on prend la sortie de tache_singu
-    static const std::string entree = "\\..\\Debug\\sortie_recentre.geogram"; // si on veut relancer sur la nouvelle sortie
-    static const std::string entree_bord = "\\..\\Debug\\sortie_chart.geogram";
+    // static const std::string entree = "sortie.geogram"; //si on prend la sortie de tache_singu
+    static const std::string entree = "sortie_recentre.geogram"; // si on veut relancer sur la nouvelle sortie
+    static const std::string entree_bord = "sortie_chart.geogram";
     static const std::string sortie = "sortie_recentre.geogram";
-    static const std::string ff_path = "\\..\\Debug\\framefield.geogram";
-    SurfaceAttributes attrs = read_by_extension(path + entree, m);
-    SurfaceAttributes attrs_framefield = read_by_extension(path + ff_path, mff);
-    SurfaceAttributes attrs_bord = read_by_extension(path + entree_bord, m_bord);
+    static const std::string ff_path = "framefield.geogram";
+    SurfaceAttributes attrs = read_by_extension(entree, m);
+    SurfaceAttributes attrs_framefield = read_by_extension( ff_path, mff);
+    SurfaceAttributes attrs_bord = read_by_extension( entree_bord, m_bord);
     PointAttribute<int> coins_attr("coins_attr", attrs_bord, m);
     FacetAttribute<int> coins_concave("coins concave", attrs_bord, m);
     m.connect();
@@ -111,8 +111,9 @@ int main(int argc, char** argv) {
     //     std::cout << cle.first << std::endl;
     // }
     // std::cout << "passe" <<std::endl;
+    std::cout << "pase" << std::endl;
 
-    std::vector<int> nb_cote(nb_source);
+    std::vector<int> nb_cote(nb_source + 100);
     for (auto v: m.iter_vertices()) {
         // on note a chaque sources son nombre de sommets
         int compte = 0;
@@ -138,6 +139,7 @@ int main(int argc, char** argv) {
     } 
     // ça peut dépendre de la taille de la surface, de la face 
     // on peut enlever ou ajouter des sources si ça s'éloigne trop de l'écart moyen de la face TODO
+    std::cout << "pase" << std::endl;
     
 
     std::vector<vec3> centres; 
@@ -155,6 +157,8 @@ int main(int argc, char** argv) {
         n++;
     }
 
+
+    std::cout << "pase" << std::endl;
     // si il y a une tache qui fait un triangle on la supprime
 
     for (auto [v, n]: centre_tri) {
@@ -265,19 +269,22 @@ int main(int argc, char** argv) {
                 // on peut vérifier ici si ca touche une autre face trop proche
                 if (choix_supprime) {
                     if (source[f2] != - 1 && source[f2] != source[f] && distance < dist_min) {
-                        trop_proche[f2] = true;
-                        if (!a_garder[source[f2]] && !a_jeter[source[f]] && singu_of_source.find(source0[f_source]) == singu_of_source.end() && !a_jeter[source[f2]]) {
-                            a_jeter[source[f2]] = true;
+                        //on garde la plus petite des deux
+                        int f_min = std::min(f, f2), f_max = std::max(f, f2);;
+                        trop_proche[f_max] = true;
+
+                        if (!a_garder[source[f_max]] && !a_jeter[source[f_min]] && singu_of_source.find(source0[racine_of_source[source[f_min]]]) == singu_of_source.end() && !a_jeter[source[f_max]]) {
+                            a_jeter[source[f_max]] = true;
                             std::cout << "passage0" << std::endl;
                             //on supprime source[f2] et on met tout couleur source[f1]
                             a_garder[source[f]] = true;
-                            int to_kill = source[f2];
+                            int to_kill = source[f_max];
                             std::cout << source[f] <<std::endl;
                             for (auto f0: m.iter_facets()) {
-                                if (source[f0] == to_kill) {source[f0] = source[f];}
+                                if (source[f0] == to_kill) {source[f0] = source[f_min];}
                                 
                             }
-                            new_racine[racine_of_source[source[f2]]] = -1;
+                            new_racine[racine_of_source[source[f_max]]] = -1;
                         }
                     }
                 }

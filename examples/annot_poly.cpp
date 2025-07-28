@@ -42,7 +42,7 @@ int main(int argc, char** argv) {
     // Declare a mesh with triangle surface
     Polygons m;
 
-    SurfaceAttributes attrs = read_by_extension(path + "\\..\\Debug\\outpoly.geogram", m);
+    SurfaceAttributes attrs = read_by_extension("outpoly.geogram", m);
     static const std::string sortie = "poly_annot.geogram";
 
     m.connect();

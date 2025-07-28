@@ -48,17 +48,13 @@ int main(int argc, char** argv) {
     // Declare a mesh with triangle surface
     Triangles m;
     Triangles m_bord;
-    static const std::string entree = "\\..\\Debug\\framefield.geogram";
-    static const std::string entree_bord = "\\..\\Debug\\sortie_chart.geogram";
+    static const std::string entree = "framefield.geogram";
+    static const std::string entree_bord = "sortie_chart.geogram";
     static const std::string sortie = "sortie.geogram";
-    std::cout << "pass1" << std::endl;
-    SurfaceAttributes attrs = read_by_extension(path + entree, m);
-    std::cout << "pass3" << std::endl;
+    SurfaceAttributes attrs = read_by_extension(entree, m);
     PointAttribute<int> singularite("singularite", attrs, m);
-    std::cout << "pass3" << std::endl;
-    SurfaceAttributes attrs_bord = read_by_extension(path + entree_bord, m_bord);
+    SurfaceAttributes attrs_bord = read_by_extension(entree_bord, m_bord);
     FacetAttribute<bool> seed_bord("seed", attrs_bord, m);
-    std::cout << "pass2" << std::endl;
 
     m.connect();
 
@@ -83,7 +79,7 @@ int main(int argc, char** argv) {
         a_traite.push_back(frand);
         while (a_traite.size() != 0) {
             for (int fid: a_traite) {
-                if (zone[fid] != -1) {continue;}
+                if (zone[fid] != -1) continue;
                 compte_face++;
                 zone[fid] = zone_num;
                 de_zone[zone_num].push_back(fid);
