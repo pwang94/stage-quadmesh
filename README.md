@@ -28,6 +28,6 @@ recentre permet de recentrer les taches, d'en ajouter ou d'en supprimer si il en
 
 suppr_non_disque détecte les taches qui ne forment pas un disque topologique et rajoute des sources proches
 
-poly_to_quad renvoie un maillage polygonal où les singus ont été découpé
+tache_to_quad renvoie un maillage polygonal où les singus ont été découpé
 
 annot_poly annote le maillage pour transformer le t-mesh en maillage quad.
