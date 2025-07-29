@@ -165,35 +165,17 @@ int main(int argc, char** argv) {
 
     }
     
-    std::vector<int> racine_of_source(nb_source);//on fait un tableau qui a chaque source renvoie la racine
-    
-    
-    //racines
-    // for (auto f: m.iter_facets()) {
-    //     if (racine[f] != -1) {
-    //         //on rajoute le sommet a m2
-    //         m2.points.create_points(1);
-    //         m2.points[num_vertice] = f.geom<Triangle3>().bary_verts();//bary
-    //         racine_of_source[source[f]] = num_vertice;
-    //         num_vertice++;
-    //     }
-    // }
-    
-    
-    
 
     m2.connect();
     
     std::vector<int> new_face;
     std::map<std::pair<int, int>, int> milieu;
     int taille = 0;
-    // const int taille_min = 4;
-    //TODO ici: supprimer les petites arêtes
     std::map<std::pair<int, int>, int> mid_se;
 
     for (int color = 0; color < nb_source; color++) {
         new_face.clear();
-        if (sommetsface[color].size() == 0) {continue;}
+        if (sommetsface[color].size() == 0) continue;
         Surface::Vertex s0(m, sommetsface[color][0]);
         int current_vertice = s0;
         int last_vertice = s0;
@@ -223,8 +205,6 @@ int main(int argc, char** argv) {
                         //     new_face.push_back(mid_se[{color, current_color}]);
                         // }
                         // else {new_face.push_back(oldtonew[current_vertice]);}
-                        // if (color == 68) {std::cout << "sommets " <<oldtonew[current_vertice] << std::endl;}
-
                         new_face.push_back(oldtonew[current_vertice]);
                         compte++;
                         taille = 0;
@@ -239,20 +219,9 @@ int main(int argc, char** argv) {
         }
         //on remplit sommet_face pour recentre.cpp
         m2.conn->create_facet(new_face.data(), new_face.size()); //sans mp
-        if (singu_of_source.find(color) != singu_of_source.end()) {
-            singu[m2.nfacets()-1] = true;}
-        if (coin_of_source.find(color) != coin_of_source.end()) facet_with_coins[m2.nfacets()-1] = true;
-        // std::vector<int> new_quad;
-        // for (int i= 0; i < new_face.size(); i++) {
-        //     std::cout << "nouveau quad"<< std::endl;
-            
-        //     new_quad.clear();
-        //     new_quad.push_back(racine_of_source[color]);
-        //     new_quad.push_back(mid(milieu, new_face[(new_face.size() + i - 1) % new_face.size()], new_face[i], num_vertice, m2));
-        //     new_quad.push_back(new_face[i]);
-        //     new_quad.push_back(mid(milieu, new_face[i], new_face[(i+1)%new_face.size()], num_vertice, m2));
-        //     m2.conn->create_facet(new_quad.data(), 4);
-        // }
+        if (singu_of_source.find(color) != singu_of_source.end()) singu[m2.nfacets()-1] = true; // la face a une source singu
+        if (coin_of_source.find(color) != coin_of_source.end()) facet_with_coins[m2.nfacets()-1] = true; //la face a un coin concave
+
     }
 
 

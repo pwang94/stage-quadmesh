@@ -48,17 +48,21 @@ int main(int argc, char** argv) {
     
     // TODO modifier les paramètres avec argv
     bool display = true;
-    bool ajoute_face = false;
-    const bool choix_supprime = false;
+    // bool ajoute_face = false;
+    // const bool choix_supprime = false;
     const int choix_norme = 1; // 1: l_inf 0: l_2  2:l_1
+
+    bool on_previous_out = argc >= 2 && std::string(argv[1]) == "previous";
+    bool ajoute_face = argc >= 2 && std::string(argv[1]) == "add_face" || argc >= 3 && std::string(argv[2]) == "add_face" ;
+    bool choix_supprime = argc >= 2 && std::string(argv[1]) == "delete_face" || argc >= 3 && std::string(argv[2]) == "delete_face" ;
 
     std::string path = getAssetPath();
 
     Triangles m; // charts
     Triangles mff; //framefield
     Triangles m_bord;
-    // static const std::string entree = "sortie.geogram"; //si on prend la sortie de tache_singu
-    static const std::string entree = "sortie_recentre.geogram"; // si on veut relancer sur la nouvelle sortie
+    // static const std::string entree = ; //si on prend la sortie de tache_singu
+    std::string entree = on_previous_out ? "sortie_recentre.geogram" : "sortie.geogram" ; // si on veut relancer sur la nouvelle sortie
     static const std::string entree_bord = "sortie_chart.geogram";
     static const std::string sortie = "sortie_recentre.geogram";
     static const std::string ff_path = "framefield.geogram";
