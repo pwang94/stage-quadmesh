@@ -38,7 +38,3 @@ execute_process(
 )
 
 add_subdirectory(examples)
-
-#cgal
-
-#create_single_source_cgal_program("examples\\framefield.cpp")
