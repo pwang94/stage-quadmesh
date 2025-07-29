@@ -105,8 +105,6 @@ int main(int argc, char** argv) {
 
     // on stock les coins de chaques faces 
     
-    std::vector<std::vector<int>> coins(zone_num, {}); // stock les coins de chaque zone
-    std::vector<int> toutcoins;
     double tolerance = 0.3;
     PointAttribute coins_attr(m, 0);
     FacetAttribute<bool> coins_attr_facets(m, 0);
@@ -164,31 +162,6 @@ int main(int argc, char** argv) {
     }
 
 
-    // coins en tournan autour du sommet et en comptants les hards edges
-
-    // for (auto v: m.iter_vertices()) {
-    //     //on récupère un hard edge si il y en a un
-    //     Surface::Halfedge h_curr(m, 0), h_prec(m, 0);
-    //     int compteur = 0;
-    //     for (auto h: v.halfedge().iter_sector_halfedges()) {
-    //         if (hard_edges_attr[h]) {
-    //             compteur++;
-    //             h_prec = h_curr;
-    //             h_curr = h;
-    //         }
-    //     }
-    //     int angle = 0;
-    //     bool no = false;
-    //     if (compteur >= 3) {
-    //         for (auto h: h_curr.iter_sector_halfedges()) {
-    //             if (hard_edges_attr[h]) {
-    //                 //on regarde si on est sur la nouvelle face ou l'ancienne
-    //             }
-    //             angle++; 
-    //         }
-    //     }
-    // }
-
     //seed
 
     for (auto v: m.iter_vertices()) {
@@ -203,7 +176,6 @@ int main(int argc, char** argv) {
 
 
 
-    //TO essayer: sampler le bord en plus des singu du framefield
     // peut etre sampler toute la surface en utilisant les 1ere tache pour faire des trucs
 
     //on autorise les nouvelles source loins des anciennes:
@@ -244,7 +216,6 @@ int main(int argc, char** argv) {
     }
     //charts gen
 
-    std::cout << "passe" << std::endl;
 
 
 
@@ -262,7 +233,6 @@ int main(int argc, char** argv) {
                 }
             }
         }
-
         a_traite = a_traite2;
         a_traite2.clear();
     } while (a_traite.size() != 0);

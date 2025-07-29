@@ -272,6 +272,7 @@ int main(int argc, char** argv) {
         file << f << "\n" ;
 
         while (i < 4 && compte < f.size()) {
+
             if (annotation[f][compte] == 1) {
                 if (i == 0) mapquad[f.halfedge(compte)] = vec2(0, 1);  
                 if (i == 1) mapquad[f.halfedge(compte)] = vec2(1, 1);  
@@ -279,7 +280,12 @@ int main(int argc, char** argv) {
                 if (i == 3) mapquad[f.halfedge(compte)] = vec2(0, 0);  
                 i++;
                 file << " coins: " << f.halfedge(compte).from();
-                
+            }
+            else {
+                if (i == 0) mapquad[f.halfedge(compte)] = (vec2(0, 1) + vec2(0, 0)) / 2.;  
+                if (i == 1) mapquad[f.halfedge(compte)] = (vec2(0, 1) + vec2(1, 1)) / 2.;  
+                if (i == 2) mapquad[f.halfedge(compte)] = (vec2(1, 0) + vec2(1, 1)) / 2.;  
+                if (i == 3) mapquad[f.halfedge(compte)] = (vec2(1, 0) + vec2(0, 0)) / 2.;
             }
             compte++;
         }

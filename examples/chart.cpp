@@ -6,14 +6,6 @@
 
 using namespace UM;
 
-bool deuxcommun(std::vector<int> v1, std::vector<int> v2) {
-    int compte = 0;
-    for (int c : v2) {
-        if (std::find(v1.begin(), v1.end(), c) != v1.end()) {compte++;}
-    }
-    return (compte == 2);
-}
-
 void find_hard_edges(Triangles& mesh, CornerAttribute<bool>& hard_edges_attr, double threshold) {
 
     // Iter on all mesh halfedges

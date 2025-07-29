@@ -89,7 +89,7 @@ int main(int argc, char** argv) {
         a_traite.push_back(frand);
         while (a_traite.size() != 0) {
             for (int fid: a_traite) {
-                if (zone[fid] != -1) {continue;}
+                if (zone[fid] != -1) continue;
                 zone[fid] = zone_num;
                 compte_face++;
                 de_zone[zone_num].push_back(fid);
@@ -111,7 +111,6 @@ int main(int argc, char** argv) {
 
     LeastSquares ls(2*m.nfacets());
     //on fixe les contraintes au bord
-    //double eps = 1e-5;
     for (auto f: m.iter_facets()) {
         if (hard_face[f]) { // TODO: traiter le cas plusieurs halfedge
             auto repere = repere_ref(f.halfedge(0), f.halfedge(1));
