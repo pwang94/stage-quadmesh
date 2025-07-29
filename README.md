@@ -22,7 +22,7 @@ suppr_non_disque détecte les taches qui ne forment pas un disque topologique et
 Entrée: sortie_recentre.geogram Un maillage triangulaire
 Sortie: sortie_disque.geogram
 
-tache_to_quad renvoie un maillage polygonal où les singus ont été découpé
+tache_to_poly renvoie un maillage polygonal où les singus ont été découpé
 Entrée: sortie_disque.geogram un maillage triangulaire avec taches et singus
 Sortie: un maillage polygonal
 
