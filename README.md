@@ -29,6 +29,6 @@ pour ajouter ou supprimer des faces trop proche on peut ajouter le paramètre ad
 
 suppr_non_disque détecte les taches qui ne forment pas un disque topologique et rajoute des sources proches
 
-poly_to_quad renvoie un maillage polygonal où les singus ont été découpé
+tache_to_quad renvoie un maillage polygonal où les singus ont été découpé
 
 annot_poly annote le maillage pour transformer le t-mesh en maillage quad.
