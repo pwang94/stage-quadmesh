@@ -1,3 +1,7 @@
+## run
+
+Il faut lancer tous les exécutable à partir de leur emplacement
+
 ## Pipeline
 
 chart permet de générer la première partition en taches.

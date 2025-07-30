@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 
 add_executable(chart chart.cpp)
-add_executable(tache_to_poly tache_to_quad.cpp)
+add_executable(tache_to_poly tache_to_poly.cpp)
 add_executable(framefield framefield.cpp)
 add_executable(tache_singu tache_singu.cpp)
 add_executable(recentre recentre.cpp)
@@ -28,5 +28,4 @@ target_link_libraries(suppr_non_disque ${CMAKE_DL_LIBS} ultimaille $<$<BOOL:${Op
 
 # Copy asset files to build directory
 configure_file(assets/joint_sub_sub.geogram assets/joint_sub_sub.geogram COPYONLY)
-#configure_file(../build/examples/Debug/a_transformer.geogram assets/a_transformer.geogram COPYONLY)
 

@@ -42,12 +42,12 @@ int main(int argc, char** argv) {
     
     double dist_max = 0.195; //pour supprimer des sources
     int dist_max1 = 25;  // aussi mais la distance est le nombre d'arête sur le chemin
-    double dist_min = 0.05; // pour ajouter des sources
+    double dist_min = 0.15; // pour ajouter des sources
     
     double eps =1e-6;
     
     // TODO modifier les paramètres avec argv
-    bool display = true;
+    bool display = false;
     // bool ajoute_face = false;
     // const bool choix_supprime = false;
     const int choix_norme = 1; // 1: l_inf 0: l_2  2:l_1
@@ -55,7 +55,7 @@ int main(int argc, char** argv) {
     bool on_previous_out = argc >= 2 && std::string(argv[1]) == "previous";
     bool ajoute_face = argc >= 2 && std::string(argv[1]) == "add_face" || argc >= 3 && std::string(argv[2]) == "add_face" ;
     bool choix_supprime = argc >= 2 && std::string(argv[1]) == "delete_face" || argc >= 3 && std::string(argv[2]) == "delete_face" ;
-
+    if (on_previous_out) std::cout << "test" << std::endl;
     std::string path = getAssetPath();
 
     Triangles m; // charts
@@ -115,7 +115,6 @@ int main(int argc, char** argv) {
     //     std::cout << cle.first << std::endl;
     // }
     // std::cout << "passe" <<std::endl;
-    std::cout << "pase" << std::endl;
 
     std::vector<int> nb_cote(nb_source + 100);
     for (auto v: m.iter_vertices()) {
@@ -143,7 +142,7 @@ int main(int argc, char** argv) {
     } 
     // ça peut dépendre de la taille de la surface, de la face 
     // on peut enlever ou ajouter des sources si ça s'éloigne trop de l'écart moyen de la face TODO
-    std::cout << "pase" << std::endl;
+    // std::cout << "pase" << std::endl;
     
 
     std::vector<vec3> centres; 
@@ -257,7 +256,7 @@ int main(int argc, char** argv) {
                 double correction = abs(f_source.geom<Poly3>().normal() * v);
                 switch (choix_norme) {
                     case 1:
-                        distance = std::max(abs(v*frames0[f_source]), abs(v*frames1[f_source])) +correction * 1 /*+  0.01 *v.norm() */;
+                        distance = std::max(abs(v*frames0[f_source]), abs(v*frames1[f_source])) +correction * 1/* +   0.01 *v.norm() */;
                         break;
                     case 2:
                         distance = abs(v*frames0[f_source]) + abs(v*frames1[f_source]) + correction * 1;
