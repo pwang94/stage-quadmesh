@@ -1,6 +1,6 @@
-## run
+## Run
 
-Il faut lancer tous les exécutable à partir de leur emplacement
+Il faut lancer tous les exécutables à partir de leur dossier.
 
 ## Pipeline
 
