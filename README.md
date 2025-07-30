@@ -4,9 +4,9 @@ Il faut lancer tous les exécutables à partir de leur dossier.
 
 ## Pipeline
 
-chart permet de générer la première partition en taches.
-Entrée: un maillage triangulaire
-Sortie: sortie_chart.geogram le maillage avec les attributs des taches
+chart permet de générer la première partition en taches.  
+Entrée: un maillage triangulaire  
+Sortie: sortie_chart.geogram le maillage avec les attributs des taches  
 
 framefield calcule le framefield
 Entrée: sorti un maillage triangulaire
