@@ -5,22 +5,6 @@
 
 using namespace UM;
 
-// bool deuxcommun(std::vector<int> v1, std::vector<int> v2) {
-//     int compte = 0;
-//     for (int c : v2) {
-//         if (std::find(v1.begin(), v1.end(), c) != v1.end()) {compte++;}
-//     }
-//     return (compte >= 2);
-// }
-
-
-// int encommun(std::vector<int> v1, std::vector<int> v2, int f) {
-//     for (int c : v2) {
-//         if (std::find(v1.begin(), v1.end(), c) != v1.end() && c != f) {return c;};
-//     }
-//     assert(false);
-//     return 0;
-// }
 
 void find_hard_edges(Triangles& mesh, CornerAttribute<bool>& hard_edges_attr, double threshold) {
 
@@ -47,16 +31,6 @@ void find_hard_edges(Triangles& mesh, CornerAttribute<bool>& hard_edges_attr, do
 
 }
 
-// int mid(std::map<std::pair<int, int>, int> &milieu, int s1, int s2, int &compte, Polygons& m) {
-//     if (milieu.find({s1, s2}) == milieu.end()) {
-//         m.points.create_points(1);
-//         m.points[compte] = (m.points[s1] + m.points[s2]) / 2;
-//         milieu[{s1, s2}] = compte;
-//         compte++;
-//         std::cout << "nouveau pt" << std::endl;
-//     }
-//     return milieu[{s1, s2}];
-// }
 
 
 int main(int argc, char** argv) {
@@ -107,8 +81,6 @@ int main(int argc, char** argv) {
     FacetAttribute<bool> facet_with_coins(m2);
     PointAttribute<bool> coins_new(m2);
 
-
-
     FacetAttribute<bool> singu(m2);
     FacetAttribute<int>  index_singu(m);
     PointAttribute<int> singularite("singularite", attrs, m);
@@ -126,8 +98,6 @@ int main(int argc, char** argv) {
             singu_vertice_of_source[source[v.halfedge().facet()]] = v;
         }
     }
-    std::cout << "test130" << std::endl; 
-
 
     for (auto f: m.iter_facets()) {
         if (coins_concave[f]) {
@@ -188,23 +158,6 @@ int main(int argc, char** argv) {
             for (auto h: (current_vertice_v.halfedge()).iter_sector_halfedges()) {
                 if (source[h.opposite().facet()] == color && source[h.facet()] != color && h.to() != last_vertice) {
                     if (std::find(sommetsface[color].begin(), sommetsface[color].end(), current_vertice) != sommetsface[color].end()) {
-            
-                        // if (taille < taille_min && taille != 0) {
-                        //     //on change le dernier sommet par la moyenne avec le nouveau
-                        //     //on a un dico qui donne le point qu'on garde
-                        //     //après on remplace toute les faces
-                        //     if (mid_se.find({color, current_color}) == mid_se.end()) {
-                        //         m2.points.create_points(1);
-                        //         m2.points[num_vertice] = (current_vertice_v.pos() + m2.points[new_face[new_face.size() - 1]])/2;
-                        //         std::cout << "test2" <<std::endl;
-
-                        //         mid_se[{color, current_color}] = num_vertice;
-                        //         num_vertice++;
-                        //     }
-                        //     new_face.pop_back();
-                        //     new_face.push_back(mid_se[{color, current_color}]);
-                        // }
-                        // else {new_face.push_back(oldtonew[current_vertice]);}
                         new_face.push_back(oldtonew[current_vertice]);
                         compte++;
                         taille = 0;
@@ -351,7 +304,6 @@ int main(int argc, char** argv) {
                     }
                 }
 
-                // std::cout << "new_dir" << std::endl;
                 // //on veut eviter les petites arêtes
                 if (deja_pris[h_choisit] /* || (h_choisit.to().pos() - h_choisit.from().pos()).norm() <0.08 */) {
                     //on cherche une autre arête qui convient
@@ -458,21 +410,12 @@ int main(int argc, char** argv) {
             vec3 v2_n;
             // 1er cote
             int compte = 0;
-            std :: cout << f << " f" << std::endl;
             do {
                 new_face.push_back(f.vertex(i_curr% f.size()));
-                std::cout << "sommet " << f.vertex(i_curr%f.size()) << std::endl;
-                std::cout << i_curr % f.size() << std::endl;
-                std::cout << f.size() << std::endl;
-                std::cout << f.halfedge(i_curr%f.size()).from() << std::endl;
-                std::cout << f.halfedge(i_curr%f.size()).to() << std::endl;
                 v1 = f.halfedge(i_curr % f.size()).to().pos() - f.halfedge(i_curr % f.size()).from().pos();
-                // std::cout << v1 << std::endl;
                 v1_n = v1/ v1.norm();
                 v2 = f.halfedge((i_curr + 1)% f.size()).to().pos() - f.halfedge((i_curr + 1) % f.size()).from().pos();
-                // std::cout << v2 << std::endl;
                 v2_n = v2/ v2.norm();
-                std::cout << v1 * v2 << std::endl;
                 if (v1_n * v2_n < 0.9) compte++;
                 i_curr++;
             } while (compte < 2);
@@ -490,31 +433,18 @@ int main(int argc, char** argv) {
             
             a_recoller.push_back({m2.points.size() - 1, f.halfedge((i_curr)% f.size()).opposite()});
             i_curr++;
-            std::cout << "deuxieme face \n" <<std::endl;
             do {
                 new_face.push_back(f.vertex(i_curr % f.size()));
-                std::cout << "sommet " << f.vertex(i_curr%f.size()) << std::endl;
-                // std::cout << i_curr % f.size() << std::endl;
-                // std::cout << f.size() << std::endl;
-                // std::cout << f.halfedge(i_curr%f.size()).from() << std::endl;
-                // std::cout << f.halfedge(i_curr%f.size()).to() << std::endl;
                 v1 = f.halfedge(i_curr % f.size()).to().pos() - f.halfedge(i_curr % f.size()).from().pos();
-                // std::cout << v1 << std::endl;
                 v1_n = v1/ v1.norm();
                 v2 = f.halfedge((i_curr - 1 + f.size())% f.size()).to().pos() - f.halfedge((i_curr - 1 +f.size()) % f.size()).from().pos();
-                // std::cout << v2 << std::endl;
                 v2_n = v2/ v2.norm();
-                // std::cout << v1 * v2 << std::endl;
-                // std::cout << v1_n * v2_n << std::endl;
                 i_curr++;
-            } while (v1_n * v2_n > 0.9);
+            } while (v1_n * v2_n > 0.95);
             i_curr--;
             m2.points.create_points(1);
             m2.points[m2.points.size() - 1] = (f.halfedge((i_curr)% f.size()).to().pos() + f.halfedge((i_curr) % f.size()).from().pos())/2;
             new_face.push_back(m2.points.size() - 1);
-            std::cout << "sommet " << m2.points.size() - 1 << std::endl;
-            std::cout << "nb sommet " << new_face.size() << std::endl;
-            std::cout << m2.nverts() << std::endl;
 
             m2.conn->create_facet(new_face.data(), new_face.size());
 
@@ -531,7 +461,6 @@ int main(int argc, char** argv) {
             } while (i_curr % f.size() != i0);
             m2.conn->create_facet(new_face.data(), new_face.size());
             m2.conn->active[f] = false; 
-
         }
     }
 
@@ -540,7 +469,6 @@ int main(int argc, char** argv) {
     //on recolle les morceaux
     std::vector<int> sommet_toujours_mauvais;
     PointAttribute<int> sommet_toujours_mauvais_attr(m2.points);
-    CornerAttribute<int> tienstiens(m2);
     for (auto& [pts, h]: a_recoller){
         // si jamais !h.active(),  c'est qu'on a supprimé la face soit parce qu'elle est singu soit pendant le recollage
         // il faut donc donner la nouvelle arête
@@ -620,33 +548,16 @@ int main(int argc, char** argv) {
     
     for (auto f: m2.iter_facets()) {
         if (f.size() < 3) {
-            // std::cout << "ah bon"<< std::endl;
-            m2.conn->active[f] = false; 
-            
+            m2.conn->active[f] = false;             
         }
     }
     m2.compact();
-
-
-
-
-    //on voudra mettre un 3 sur les coins concaves 
-
-
-
-
-
-
-
-
-    // write_by_extension("test_subdivise.geogram", test, {{}, {}});
-
 
     for (auto v: m2.iter_vertices()) {
         if (coins_new[v]) {pt_singu[v]++;}
     }
 
-    write_by_extension(sortie, m2, {{{"pt_singu", pt_singu.ptr}, {"coins_new",coins_new.ptr} }, {{"singu", singu.ptr}, {"facet_with_coins", facet_with_coins.ptr}}, {{"tienstiens", tienstiens.ptr}}});
+    write_by_extension(sortie, m2, {{{"pt_singu", pt_singu.ptr}, {"coins_new",coins_new.ptr} }, {{"singu", singu.ptr}, {"facet_with_coins", facet_with_coins.ptr}}, {}});
     int result = system((getGraphitePath() + " " + sortie).c_str());
     return 0;
 }

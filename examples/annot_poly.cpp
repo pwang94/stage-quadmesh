@@ -35,11 +35,6 @@ void find_hard_edges(Polygons& mesh, CornerAttribute<bool>& hard_edges_attr, Poi
 int main(int argc, char** argv) {
 
     // --- LOAD ---
-
-    // Get path of current executable
-    std::string path = getAssetPath();
-
-    // Declare a mesh with triangle surface
     Polygons m;
 
     SurfaceAttributes attrs = read_by_extension("outpoly.geogram", m);
@@ -50,22 +45,9 @@ int main(int argc, char** argv) {
     PointAttribute<bool> coins("coins_new", attrs, m);
     
     FacetAttribute<int> facet_obj_sommet(m, 4);
-    // FacetAttribute<bool> facet_with_coins("facet_with_coins", attrs, m);
     PointAttribute<bool> hard_point(m, false);
     CornerAttribute<bool> hard_edges_attr(m, false);
     find_hard_edges(m, hard_edges_attr, hard_point, 0.6);
-
-    // for (auto f: m.iter_facets()) {
-    //     if (facet_with_coins[f]) facet_obj_sommet[f]++;
-    // }
-    //on note 2 si c'est angle pi 1 si c'est pi/2
-
-    //on veut chaque sommet d'indice total 4
-
-    // on fait par face on donne 1 au 4 meilleurs 2 au reste
-    // si il y ambiguité on le fait plus tard, ambiguité à partir de 3pi/4
-    // plus tard: on prend les meilleurs selon qqch qui prend en compte que indice 4 c'est mieux
-
 
     PointAttribute<int> compte_sommet(m);
 
@@ -75,22 +57,10 @@ int main(int argc, char** argv) {
     FacetAttribute<int> valide(m, 0);
 
 
-
     for (auto f: m.iter_facets()) {
         std::vector<std::pair<double, int>> angle;
         if (f.size() <= 3) continue; 
-        if (f == 190) std::cout << "190 eme FACE" << std::endl;
-
         annotation[f] = std::vector<int>(f.size(), -1);
-        // if (facet_with_coins[f]) {
-        //     //on met à 3 le coin concave
-        //     for (auto h: f.iter_halfedges()) {
-        //         if (coins[h.from()]) {
-        //             annotation[f][h.id_in_facet()] = 3;
-        //             annotations[h] = 3;
-        //         }
-        //     }
-        // }
 
         for (int i = 0; i <f.size(); i++) {
             //on calcule l'angle
@@ -108,17 +78,13 @@ int main(int argc, char** argv) {
 
             return abs(p1.first) < abs(p2.first);
         } );
-        //heuristique comme ça 
-        std::cout << "test0"<< std::endl;
-        std::cout << f.size()<< std::endl;
+        //heuristique comme ça pour voir
         if ((f.size() == 4 || (abs(angle[3].first) < 0.3 )|| (abs(angle[3].first) < 0.50 && abs(angle[4].first) > 0.7))
             /* && !facet_with_coins[f] */) {
             std::cout << "test2"<< std::endl;
             valide[f] = 4;
             for (int i= 0; i < 4; i ++) {
                 compte_sommet[f.vertex(angle[i].second)]++;
-                //annotation[f][i] = 1;
-                //annotations[f.halfedge(i)] = 1;
                 annotation[f][angle[i].second] = 1;
                 annotations[f.halfedge(angle[i].second)] = 1;
             }
@@ -129,7 +95,6 @@ int main(int argc, char** argv) {
 
             }
         }
-        std::cout << "test3"<< std::endl;
         angles[f] = angle;
     }
     // on regarde les faces qui n'ont pas été validée
@@ -137,10 +102,7 @@ int main(int argc, char** argv) {
     //on annote directe tous les angles ou c'est vraiment proche de 90 ou 180
     for (auto f: m.iter_facets()) {
         if (f.size() <= 3 || valide[f] == facet_obj_sommet[f]) continue;
-        if (f == 190) std::cout << "190 PASSAGE 2" << std::endl;
         for (auto& [alpha, num]: angles[f]) {
-            if (f == 190) std::cout << "alpha" << alpha << std::endl;
-
             if (abs(alpha) < 0.3 && valide[f] < 4 && annotation[f][num] == -1) {
                 annotation[f][num] = 1;
                 annotations[f.halfedge(num)] = 1;
@@ -180,7 +142,6 @@ int main(int argc, char** argv) {
                 pris_nb += 1;
                 annotation[f][vert_num] = 1; 
                 annotations[f.halfedge(vert_num)] = 1;
-
                 valide[f]++;
                 compte_sommet[f.vertex(vert_num)]++;
             }
@@ -202,8 +163,6 @@ int main(int argc, char** argv) {
             if (annotation[f][i] == -1) {
                 annotation[f][i] = 2;
                 annotations[f.halfedge(i)] = 2; 
-                if (f == 124) {std::cout << i << " = 1" << std::endl;};
-
                 compte_sommet[f.vertex(i)]+=2;
             }
         }
@@ -227,7 +186,6 @@ int main(int argc, char** argv) {
             annotation[f][a5] = 1;
             annotations[f.halfedge(a3)] = 2; 
             annotations[f.halfedge(a5)] = 1; 
-
             compte_sommet[f.vertex(a5)]--;
             compte_sommet[f.vertex(a3)]++;
         }
@@ -238,13 +196,7 @@ int main(int argc, char** argv) {
     for (auto f: m.iter_facets()) {
         if (valide[f] >= 4) continue;
         for (int i = 0; i < f.size(); i++) {
-            if (f == 190) {
-                
-            std:: cout << "annot"<< annotation[f][i] << std::endl;
-            std:: cout << "somm"<< compte_sommet[f.vertex(i)] << std::endl;
-            std:: cout << "sing"<< pt_singu[f.vertex(i)] << std::endl;}
             if (annotation[f][i] == 2 && compte_sommet[f.vertex(i)] > pt_singu[f.vertex(i)]) {
-
                 annotation[f][i] = 1;
                 compte_sommet[f.vertex(i)]--;
                 valide[f]++;
@@ -253,23 +205,12 @@ int main(int argc, char** argv) {
         }
     }
 
-    std::ofstream file("file_annotation.txt");
-    // for (auto f: m.iter_facets()) {
-    //     file << f << "\n" ;
-    //     for (int i = 0; i< annotation[f].size(); i++) {
-    //         file << annotation[f][i] << " ";
-    //     }
-        
-    //     file << "\n";
-    // }
-    // file.close();
 
     CornerAttribute<vec2> mapquad(m);
 
     for (auto f: m.iter_facets()) {
         int i = 0;
         int compte = 0;
-        file << f << "\n" ;
 
         while (i < 4 && compte < f.size()) {
 
@@ -279,7 +220,6 @@ int main(int argc, char** argv) {
                 if (i == 2) mapquad[f.halfedge(compte)] = vec2(1, 0);  
                 if (i == 3) mapquad[f.halfedge(compte)] = vec2(0, 0);  
                 i++;
-                file << " coins: " << f.halfedge(compte).from();
             }
             else {
                 if (i == 0) mapquad[f.halfedge(compte)] = (vec2(0, 1) + vec2(0, 0)) / 2.;  
@@ -289,12 +229,8 @@ int main(int argc, char** argv) {
             }
             compte++;
         }
-        file << "\n";
-
     }
-    file.close();
 
-    // write_by_extension("poly_annot.geogram", m, {{}, {}, {{"annotations", annotations.ptr}} });
     write_by_extension(sortie, m, {{{"compte", compte_sommet.ptr}, }, {{"compte_face", valide.ptr}}, {{"annotations", annotations.ptr}, {"map", mapquad.ptr}} });
 
 

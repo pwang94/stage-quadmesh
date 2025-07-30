@@ -35,16 +35,12 @@ void find_hard_edges(Triangles& mesh, CornerAttribute<bool>& hard_edges_attr, do
 
 
 int main(int argc, char** argv) {
-    // --- LOAD ---
-
     //parametre
-
-    
     double dist_max = 0.195; //pour supprimer des sources
     int dist_max1 = 25;  // aussi mais la distance est le nombre d'arête sur le chemin
     double dist_min = 0.15; // pour ajouter des sources
     
-    double eps =1e-6;
+    // double eps =1e-6;
     
     // TODO modifier les paramètres avec argv
     bool display = false;
@@ -55,13 +51,10 @@ int main(int argc, char** argv) {
     bool on_previous_out = argc >= 2 && std::string(argv[1]) == "previous";
     bool ajoute_face = argc >= 2 && std::string(argv[1]) == "add_face" || argc >= 3 && std::string(argv[2]) == "add_face" ;
     bool choix_supprime = argc >= 2 && std::string(argv[1]) == "delete_face" || argc >= 3 && std::string(argv[2]) == "delete_face" ;
-    if (on_previous_out) std::cout << "test" << std::endl;
-    std::string path = getAssetPath();
 
     Triangles m; // charts
     Triangles mff; //framefield
     Triangles m_bord;
-    // static const std::string entree = ; //si on prend la sortie de tache_singu
     std::string entree = on_previous_out ? "sortie_recentre.geogram" : "sortie.geogram" ; // si on veut relancer sur la nouvelle sortie
     static const std::string entree_bord = "sortie_chart.geogram";
     static const std::string sortie = "sortie_recentre.geogram";
@@ -89,10 +82,6 @@ int main(int argc, char** argv) {
     FacetAttribute<double> dist(m, 1000);
     FacetAttribute<int> new_racine(m, -1);
 
-    //TODO si j'ai des triangles je veux les supprimer
-
-
-
 
     std::map<int, int> singu_of_source; //source -> singu
     std::map<int, int> racine_of_source; //source -> racine
@@ -111,12 +100,7 @@ int main(int argc, char** argv) {
 
     int nb_source = racine_of_source.size();
 
-    // for (auto cle: racine_of_source) {
-    //     std::cout << cle.first << std::endl;
-    // }
-    // std::cout << "passe" <<std::endl;
-
-    std::vector<int> nb_cote(nb_source + 100);
+    std::vector<int> nb_cote(nb_source + 100); // au cas ou on en a enlevé
     for (auto v: m.iter_vertices()) {
         // on note a chaque sources son nombre de sommets
         int compte = 0;
@@ -134,12 +118,8 @@ int main(int argc, char** argv) {
             }
         }
     }
-    // std::cout << "passe" <<std::endl;
 
-    for (int i = 0 ; i< nb_source; i++) {
-        if (nb_cote[i] == 3) { std::cout << i << "triangle" << std::endl;}
 
-    } 
     // ça peut dépendre de la taille de la surface, de la face 
     // on peut enlever ou ajouter des sources si ça s'éloigne trop de l'écart moyen de la face TODO
     // std::cout << "pase" << std::endl;
@@ -151,17 +131,12 @@ int main(int argc, char** argv) {
 
     for (auto f: m.iter_facets()) {
         if (nb_cote[source0[f]] == 3) continue;
-        // if (nb_cote[i] == 4) {
-        //     //si jamais ya un angle plat de plat c'est un triangle
-
-        // }
         auto& [v, n] = centre_tri[source0[f]];
         v += f.geom<Poly3>().bary_verts();
         n++;
     }
 
 
-    std::cout << "pase" << std::endl;
     // si il y a une tache qui fait un triangle on la supprime
 
     for (auto [v, n]: centre_tri) {
@@ -169,8 +144,6 @@ int main(int argc, char** argv) {
     }
 
     // si les sources sont trop loin d'un pt on en rajoute
-
-
     FacetAttribute<bool> trop_pres(m);
 
     if (ajoute_face) {
@@ -247,7 +220,7 @@ int main(int argc, char** argv) {
                 
                 auto f2 = h.opposite().facet();
 
-                //on calcule la distance linf suivant le framefield de f2 à la source inf TODO que si la source est pas une singu
+                //on calcule la distance linf suivant le framefield de f2 à la source inf que si la source est pas une singu
                 vec3 p1 = f_source.geom<Poly3>().bary_verts(), p2 = f2.geom<Poly3>().bary_verts();
                 vec3 v =  p1 - p2;
                 //si c'est une singu on prend juste toutes les frames qui pointent vers elle
@@ -267,7 +240,7 @@ int main(int argc, char** argv) {
                 }
 
                 if (singu_of_source.find(source0[f_source]) != singu_of_source.end()) {
-                    distance = 0.7 * v.norm();
+                    distance = 0.7 * v.norm(); // plus gros jsp pq
                 }
                 // on peut vérifier ici si ca touche une autre face trop proche
                 if (choix_supprime) {
@@ -278,14 +251,11 @@ int main(int argc, char** argv) {
 
                         if (!a_garder[source[f_max]] && !a_jeter[source[f_min]] && singu_of_source.find(source0[racine_of_source[source[f_min]]]) == singu_of_source.end() && !a_jeter[source[f_max]]) {
                             a_jeter[source[f_max]] = true;
-                            std::cout << "passage0" << std::endl;
-                            //on supprime source[f2] et on met tout couleur source[f1]
+                            //on supprime source[f_max] et on met tout couleur source[f_min]
                             a_garder[source[f]] = true;
                             int to_kill = source[f_max];
-                            std::cout << source[f] <<std::endl;
                             for (auto f0: m.iter_facets()) {
                                 if (source[f0] == to_kill) {source[f0] = source[f_min];}
-                                
                             }
                             new_racine[racine_of_source[source[f_max]]] = -1;
                         }
@@ -301,10 +271,6 @@ int main(int argc, char** argv) {
         a_traite = a_traite2;
         a_traite2.clear();
     } while (a_traite.size() != 0);
-
-
-
-
 
 
     write_by_extension(sortie, m, {{{"singularite", singularite.ptr}, {"coins_attr", coins_attr.ptr}}, {{"source", source.ptr}, {"racine", new_racine.ptr}, {"dist", dist.ptr}, {"porche", trop_proche.ptr}, {"coins concave",coins_concave.ptr}}, {}});

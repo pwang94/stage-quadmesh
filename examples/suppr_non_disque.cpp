@@ -50,7 +50,6 @@ int main(int argc, char** argv) {
     m.connect();
 
 
-
     PointAttribute<int> coins_attr("coins_attr", attrs, m);
     FacetAttribute<int> coins_concave("coins concave", attrs, m);
 
@@ -88,10 +87,12 @@ int main(int argc, char** argv) {
     std::vector<double> aretes(nb_source);
     std::vector<int> faces(nb_source, 1);
 
+    //faces
     for (auto f: m.iter_facets()) {
         faces[source[f]]++;
     }
 
+    //sommets
     std::vector<int> deja_vu;
     for (auto v: m.iter_vertices()) {
         deja_vu.clear();
@@ -103,6 +104,7 @@ int main(int argc, char** argv) {
         }
     }
 
+    //aretes
     for (auto h: m.iter_halfedges()) {
         aretes[source[h.facet()]]+= 1/2.;
         if (source[h.facet()] != source[h.opposite().facet()]) {
@@ -113,9 +115,8 @@ int main(int argc, char** argv) {
     int nb_source_init = nb_source;
 
     for (int i = 0; i < nb_source_init; i++) {
-        if (sommets[i] - aretes[i] + faces[i] != 2) {
+        if (sommets[i] - aretes[i] + faces[i] != 2) { // par la formule d'euler c'est un disque que dans ce cas
             //on ajoute une source dans ce charts
-            std::cout << "source " << i << std::endl;
             for (auto f: m.iter_facets()) {
                 if (source[f] == i) {
                     racine[f] = nb_source;

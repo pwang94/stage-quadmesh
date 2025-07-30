@@ -107,7 +107,6 @@ int main(int argc, char** argv) {
         zone_num++;
     }
 
-    PolyLine test;
 
     LeastSquares ls(2*m.nfacets());
     //on fixe les contraintes au bord
@@ -119,7 +118,6 @@ int main(int argc, char** argv) {
                     vec3 e = h.to().pos() - h.from().pos();
                     e = e/(e.norm());
                     // il faut avoir 4x l'angle
-                    // double theta = fmod(acos(co) * 4, 2 * pi);
                     double theta = atan2(repere[1] * e,repere[0] * e)* 4;
                     ls.fix(2*f, cos(theta));
                     ls.fix(2*f + 1, sin(theta));
@@ -132,7 +130,6 @@ int main(int argc, char** argv) {
 
 
     //on calcule les angle pour Rij
-    
     for (auto h: m.iter_halfedges()) {
         if (hard_edges_attr[h]) continue;
         Surface::Facet f1 = h.facet();
@@ -140,7 +137,6 @@ int main(int argc, char** argv) {
         auto repere1 = repere_ref(f1.halfedge(0), f1.halfedge(1));
         auto repere2 = repere_ref(f2.halfedge(0), f2.halfedge(1));
 
-        //TODO tourner le repere1 pour qu'il soit dans le meme plan quel le 2 selon l'arête qui les relie
         // besoin de l'axe et de l'angle
         vec3 axe = h.to().pos() - h.from().pos();
         axe = axe/axe.norm();
@@ -156,58 +152,17 @@ int main(int argc, char** argv) {
         double b = axe[0]*sin(alpha/2);
         double c = axe[1]*sin(alpha/2);
         double d = axe[2]*sin(alpha/2);
-        // double m[3][3];
-        // m[0][0] = a*a + b*b - c*c - d*d;
-        // m[0][1] = 2 * (b*c - a*d);
-        // m[0][2] = 2 * (b*d + a*c);
-        // m[1][0] = 2 * (b*c + a*d);
-        // m[1][1] = a*a + c*c - b*b - d*d;
-        // m[1][2] = 2 * (c*d - a*b);
-        // m[2][0] = 2 * (b*d - a*c);
-        // m[2][1] = 2 * (c*d + a*b);
-        // m[2][2] = a*a + d*d - b*b - c*c;
-        // std::vector<vec3> new_repere2;
-        // double rx = m[0][0] * repere2[0][0] + m[0][1] * repere2[0][1] + m[0][2] * repere2[0][2];
-        // double ry = m[1][0] * repere2[0][0] + m[1][1] * repere2[0][1] + m[1][2] * repere2[0][2];
-        // double rz = m[2][0] * repere2[0][0] + m[2][1] * repere2[0][1] + m[2][2] * repere2[0][2];
-        // new_repere2.push_back(vec3(rx, ry, rz));
-        // rx = m[0][0] * repere2[1][0] + m[0][1] * repere2[1][1] + m[0][2] * repere2[1][2];
-        // ry = m[1][0] * repere2[1][0] + m[1][1] * repere2[1][1] + m[1][2] * repere2[1][2];
-        // rz = m[2][0] * repere2[1][0] + m[2][1] * repere2[1][1] + m[2][2] * repere2[1][2];
-        // new_repere2.push_back(vec3(rx, ry, rz));
-
-        // double theta = acos(abs(repere1[0] * repere2[0])); //cos truc il faut avoir l'angle orienté
-        // if (abs(repere1[0] * repere2[0]) < 0) theta = pi - theta;
-        // if (repere2[0] * repere1[1] < 0) theta = -theta;
         double theta = atan2(repere2[0]*repere1[1], repere2[0] *repere1[0])*4;
 
         ls.add_to_energy(-cos(theta)*X(2*f2) + sin(theta)*X(2*f2 + 1) + X(2*f1));
         ls.add_to_energy(sin(theta)*X(2*f2) + cos(theta)*X(2*f2 + 1) - X(2*f1+1));
         
-        //test tourner repere1 de theta degré
-
-        if (true) {
-            test.points.create_points(3);
-            test.points[test.points.size() - 3] = (f1.vertex(0).pos() + f1.vertex(1).pos() + f1.vertex(2).pos()) /3.;
-            test.points[test.points.size() - 2] = test.points[test.points.size() - 3] + (repere1[0]*cos(theta) + repere1[1]*sin(theta))*0.08;//repere2[0]
-            test.points[test.points.size() - 1] = test.points[test.points.size() - 3] + (-repere1[0]*sin(theta) + repere1[1]*cos(theta))*0.08;//repere2[1]
-            test.create_edges(2);
-            test.vert(2*test.points.size()/3 -1, 0) = test.points.size() - 3;
-            test.vert(2*test.points.size()/3 -1, 1) = test.points.size() - 1;
-            test.vert(2*test.points.size()/3 -2, 0) = test.points.size() - 3;
-            test.vert(2*test.points.size()/3 -2, 1) = test.points.size() - 2;
-        }
-
     }
-
-    write_by_extension("test_frame.geogram", test, {{}, {}});
 
     ls.solve();
     
     // normaliser et faire alpha = alpha / 4
     
-
-
     FacetAttribute<std::vector<vec3>> frames(m);
     FacetAttribute<vec3> frames0(m);
     FacetAttribute<vec3> frames1(m);
@@ -241,10 +196,6 @@ int main(int argc, char** argv) {
         p.points[5*f+2] =  p.points[5*f] + frame2 * scale;
         p.points[5*f+3] =  p.points[5*f] - frame * scale;
         p.points[5*f+4] =  p.points[5*f] - frame2 * scale;
-        // p.points[3*f+1] =  p.points[3*f] + repere[0] * scale;
-        // p.points[3*f+2] =  p.points[3*f] + repere[1] * scale;
-        // p.points[3*f+3] =  p.points[3*f] + repere[0] * scale;
-        // p.points[3*f+4] =  p.points[3*f] + repere[1] * scale;
         p.create_edges(4);
         p.vert(4*f, 0) = 5*f;
         p.vert(4*f, 1) = 5*f + 1;
@@ -254,7 +205,6 @@ int main(int argc, char** argv) {
         p.vert(4*f + 2, 1) = 5*f+3;
         p.vert(4*f + 3, 0) = 5*f;
         p.vert(4*f + 3, 1) = 5*f+4;
-
     }
 
     //détection des singularite
@@ -270,36 +220,6 @@ int main(int argc, char** argv) {
             double max = 0;
             vec3 newframe;
             for (auto fr: frames[h.facet()]) {
-                //on applique la rotation sur fr
-                // vec3 axe = h.to().pos() - h.from().pos();
-                // axe = axe/axe.norm();
-                // vec3 normal1 = current_face.geom<Triangle3>().normal();
-                // vec3 normal2 = h.facet().geom<Triangle3>().normal();
-                // vec3 ve_normal2_axe = {normal2[1] * axe[2] - normal2[2] * axe[1], normal2[2] * axe[0] -normal2[0] * axe[2], normal2[0] * axe[1] -normal2[1] * axe[0]};
-                // vec3 ve_normal1_axe = {normal1[1] * axe[2] - normal1[2] * axe[1], normal1[2] * axe[0] -normal1[0] * axe[2], normal1[0] * axe[1] -normal1[1] * axe[0]};
-                // double alpha = atan2(ve_normal2_axe * normal1,ve_normal2_axe*ve_normal1_axe);
-
-                // //on applique la rotation à repere2 pour les mettre sur le mm plan
-                // //rotation:
-                // double a = cos(alpha/2);
-                // double b = axe[0]*sin(alpha/2);
-                // double c = axe[1]*sin(alpha/2);
-                // double d = axe[2]*sin(alpha/2);
-                // float m[3][3];
-                // m[0][0] = a*a + b*b - c*c - d*d;
-                // m[0][1] = 2 * (b*c - a*d);
-                // m[0][2] = 2 * (b*d + a*c);
-                // m[1][0] = 2 * (b*c + a*d);
-                // m[1][1] = a*a + c*c - b*b - d*d;
-                // m[1][2] = 2 * (c*d - a*b);
-                // m[2][0] = 2 * (b*d - a*c);
-                // m[2][1] = 2 * (c*d + a*b);
-                // m[2][2] = a*a + d*d - b*b - c*c;
-                // std::vector<vec3> new_repere2;
-                // double rx = m[0][0] * fr[0] + m[0][1] * fr[1] + m[0][2] * fr[2];
-                // double ry = m[1][0] * fr[0] + m[1][1] * fr[1] + m[1][2] * fr[2];
-                // double rz = m[2][0] * fr[0] + m[2][1] * fr[1] + m[2][2] * fr[2];
-                // vec3 newfr = vec3(rx, ry, rz);
                 if (fr*current_fr > max) {newframe = fr; max = fr*current_fr;};
             }
             current_face = h.facet();
@@ -308,10 +228,9 @@ int main(int argc, char** argv) {
         // on regarde si on a la bonne frame à la fin
         for (int i = 1; i<4; i ++) {
             if (current_fr * frames[h0.facet()][i] > current_fr * frames[h0.facet()][0]) {
-                // std::cout << current_fr * frames[h0.facet()][i] << " " << current_fr * frames[h0.facet()][0] << std::endl;
                 // on note si la frame la plus proche est 1 ou 3 
                 if (!hard_point[v]) {
-                    singularite[v] = i == 1? 5: 3;
+                    singularite[v] = i == 1? 5: 3; // on suppose que c'est toujours 5 ou 3
                 }
             }
         }
